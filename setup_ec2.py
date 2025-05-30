@@ -10,6 +10,7 @@ ebs_size = 8
 instance_type = 't4g.micro'
 min_count = 1
 max_count = 1
+instance_name = 'Git-deplyoment-CI/CD'  # Nome personalizado da instância
 
 # Script de inicialização (user-data)
 USER_DATA = '''#!/bin/bash
@@ -87,7 +88,7 @@ try:
             {
                 'ResourceType': 'instance',
                 'Tags': [
-                    {'Key': 'Name', 'Value': 'MyConfiguredInstance'}
+                    {'Key': 'Name', 'Value': instance_name}  # Usar a variável personalizada
                 ]
             }
         ],
