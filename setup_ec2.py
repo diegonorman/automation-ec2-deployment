@@ -25,7 +25,7 @@ sudo systemctl start apache2
 sudo systemctl enable apache2
 sudo systemctl start docker
 sudo systemctl enable docker
-echo "<h1>Instância configurada com sucesso!</h1>" > /var/www/html/index.html
+echo "<h1>Instancia configurada com sucesso!</h1>" > /var/www/html/index.html
 '''
 
 # Configurar argumentos de linha de comando
