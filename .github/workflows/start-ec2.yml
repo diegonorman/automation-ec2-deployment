@@ -39,12 +39,16 @@ jobs:
             exit 1
           fi
 
+      - name: Verificar identidade do role assumido
+        run: aws sts get-caller-identity
+
+      - name: Exportar credenciais da AWS
+        run: |
+          echo "Exportando credenciais da AWS..."
+          export AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id)
+          export AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key)
+          export AWS_SESSION_TOKEN=$(aws configure get aws_session_token)
+          echo "Credenciais exportadas com sucesso."
+
       - name: Starting EC2
-        env:
-          AWS_ACCESS_KEY_ID: ${{ steps.configure-aws-credentials.outputs.aws-access-key-id }}
-          AWS_SECRET_ACCESS_KEY: ${{ steps.configure-aws-credentials.outputs.aws-secret-access-key }}
-          AWS_SESSION_TOKEN: ${{ steps.configure-aws-credentials.outputs.aws-session-token }}
-        run: python start_ec2.py \
-          --aws-access-key-id $AWS_ACCESS_KEY_ID \
-          --aws-secret-access-key $AWS_SECRET_ACCESS_KEY \
-          --aws-session-token $AWS_SESSION_TOKEN
+        run: python start_ec2.py
