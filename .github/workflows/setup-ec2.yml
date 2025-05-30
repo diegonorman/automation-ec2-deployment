@@ -1,0 +1,42 @@
+name: Setup EC2 Instance
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  setup-ec2:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Configure AWS Credentials
+        id: configure-aws-credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: arn:aws:iam::905418073202:role/GitAction-DiegoNorman-pipiline
+          aws-region: us-east-1
+
+      - name: Exportar credenciais da AWS
+        run: |
+          echo "Exportando credenciais da AWS..."
+          export AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id)
+          export AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key)
+          export AWS_SESSION_TOKEN=$(aws configure get aws_session_token)
+          echo "Credenciais exportadas com sucesso."
+
+      - name: Setup EC2 Instance
+        run: |
+          python setup_ec2.py
