@@ -29,6 +29,16 @@ jobs:
           role-to-assume: arn:aws:iam::905418073202:role/GitAction-DiegoNorman-pipiline
           aws-region: us-east-1
 
+      - name: Verificar credenciais da AWS
+        run: |
+          echo "AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID"
+          echo "AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY"
+          echo "AWS_SESSION_TOKEN: $AWS_SESSION_TOKEN"
+          if [ -z "$AWS_ACCESS_KEY_ID" ] || [ -z "$AWS_SECRET_ACCESS_KEY" ] || [ -z "$AWS_SESSION_TOKEN" ]; then
+            echo "Erro: Credenciais da AWS não configuradas corretamente."
+            exit 1
+          fi
+
       - name: Starting EC2
         env:
           AWS_ACCESS_KEY_ID: ${{ steps.configure-aws-credentials.outputs.aws-access-key-id }}
