@@ -23,11 +23,18 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Configure AWS Credentials
+        id: configure-aws-credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
           role-to-assume: arn:aws:iam::905418073202:role/GitAction-DiegoNorman-pipiline
           aws-region: us-east-1
 
       - name: Start EC2 Instances
-        run: |
-          python start_ec2.py
+        env:
+          AWS_ACCESS_KEY_ID: ${{ steps.configure-aws-credentials.outputs.aws-access-key-id }}
+          AWS_SECRET_ACCESS_KEY: ${{ steps.configure-aws-credentials.outputs.aws-secret-access-key }}
+          AWS_SESSION_TOKEN: ${{ steps.configure-aws-credentials.outputs.aws-session-token }}
+        run: python start_ec2.py \
+          --aws-access-key-id $AWS_ACCESS_KEY_ID \
+          --aws-secret-access-key $AWS_SECRET_ACCESS_KEY \
+          --aws-session-token $AWS_SESSION_TOKEN
