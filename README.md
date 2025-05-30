@@ -59,6 +59,10 @@ Este script para instâncias EC2 que estão no estado `running` e possuem as tag
 python stop_ec2.py --aws-access-key-id <ACCESS_KEY> --aws-secret-access-key <SECRET_KEY> --aws-session-token <SESSION_TOKEN>
 ```
 
+## Integração com n8n
+
+Este projeto faz parte de um fluxo de CI/CD automatizado utilizando o n8n. Os scripts aqui descritos podem ser integrados a workflows no n8n para gerenciar instâncias EC2 de forma programática e eficiente, permitindo automação de tarefas como criação, inicialização e parada de instâncias com base em eventos ou gatilhos definidos.
+
 ## Observações
 
 - Certifique-se de que as tags das instâncias EC2 correspondam às especificadas nos scripts.
