@@ -54,40 +54,8 @@ def get_ami_id():
 
 AMI_ID = get_ami_id()
 
-# Create a security group named 'web-git' with ports 80 and 443 open to 0.0.0.0/0
-def create_security_group():
-    try:
-        response = ec2.create_security_group(
-            GroupName='web-git',
-            Description='Security group for web access on ports 80 and 443'
-        )
-        security_group_id = response['GroupId']
-
-        # Add inbound rules for ports 80 and 443
-        ec2.authorize_security_group_ingress(
-            GroupId=security_group_id,
-            IpPermissions=[
-                {
-                    'IpProtocol': 'tcp',
-                    'FromPort': 80,
-                    'ToPort': 80,
-                    'IpRanges': [{'CidrIp': '0.0.0.0/0'}]
-                },
-                {
-                    'IpProtocol': 'tcp',
-                    'FromPort': 443,
-                    'ToPort': 443,
-                    'IpRanges': [{'CidrIp': '0.0.0.0/0'}]
-                }
-            ]
-        )
-        return security_group_id
-    except Exception as e:
-        print(f"Erro ao criar ou configurar o grupo de segurança: {e}")
-        raise
-
-# Create the security group and get its ID
-security_group_id = create_security_group()
+# Use the provided security group ID
+security_group_id = 'sg-0e0a217a7398631a5'
 
 try:
     # Criar a instância EC2
