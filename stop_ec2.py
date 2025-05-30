@@ -31,6 +31,9 @@ ec2 = boto3.client(
 try:
     response = ec2.stop_instances(InstanceIds=INSTANCE_IDS)
     print(f"Instâncias paradas: {INSTANCE_IDS}")
+    
+    # Adicionar log para depuração antes de enviar o webhook
+    print(f"Enviando webhook para {WEBHOOK_URL} com payload: {{'status': 'success', 'message': f'Instâncias paradas: {INSTANCE_IDS}'}}")
     requests.post(WEBHOOK_URL, json={"status": "success", "message": f"Instâncias paradas: {INSTANCE_IDS}"})
     exit(0)  # Sucesso
 except Exception as e:
