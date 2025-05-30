@@ -28,5 +28,10 @@ ec2 = boto3.client(
     aws_session_token=aws_session_token
 )
 
-response = ec2.start_instances(InstanceIds=INSTANCE_IDS)
-print(f"Instâncias iniciadas: {INSTANCE_IDS}")
+try:
+    response = ec2.start_instances(InstanceIds=INSTANCE_IDS)
+    print(f"Instâncias iniciadas: {INSTANCE_IDS}")
+    exit(0)  # Sucesso
+except Exception as e:
+    print(f"Erro ao iniciar instâncias: {e}")
+    exit(1)  # Falha

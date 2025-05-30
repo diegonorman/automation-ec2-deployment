@@ -26,5 +26,10 @@ ec2 = boto3.client(
     aws_session_token=aws_session_token
 )
 
-response = ec2.stop_instances(InstanceIds=INSTANCE_IDS)
-print(f"Instâncias paradas: {INSTANCE_IDS}")
+try:
+    response = ec2.stop_instances(InstanceIds=INSTANCE_IDS)
+    print(f"Instâncias paradas: {INSTANCE_IDS}")
+    exit(0)  # Sucesso
+except Exception as e:
+    print(f"Erro ao parar instâncias: {e}")
+    exit(1)  # Falha
