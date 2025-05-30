@@ -29,9 +29,6 @@ jobs:
           role-to-assume: arn:aws:iam::905418073202:role/GitAction-DiegoNorman-pipiline
           aws-region: us-east-1
 
-      - name: Verificar identidade do role assumido
-        run: aws sts get-caller-identity
-
       - name: Exportar credenciais da AWS
         run: |
           echo "Exportando credenciais da AWS..."

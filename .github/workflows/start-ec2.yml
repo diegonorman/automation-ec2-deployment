@@ -39,9 +39,6 @@ jobs:
             exit 1
           fi
 
-      - name: Verificar identidade do role assumido
-        run: aws sts get-caller-identity
-
       - name: Exportar credenciais da AWS
         run: |
           echo "Exportando credenciais da AWS..."
