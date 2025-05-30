@@ -6,7 +6,10 @@ import argparse
 REGION = 'us-east-1'
 vpc_id = 'vpc-0c9b255128195b2b3'
 security_group_id = 'sg-0e0a217a7398631a5'
-ebs_size = 8  # Tamanho do EBS em GB
+ebs_size = 8
+instance_type = 't4g.micro'
+min_count = 1
+max_count = 1
 
 # Script de inicialização (user-data)
 USER_DATA = '''#!/bin/bash
@@ -63,9 +66,19 @@ try:
     # Criar a instância EC2
     instance_params = {
         'ImageId': AMI_ID,
-        'InstanceType': 't2.micro',
-        'MinCount': 1,
-        'MaxCount': 1,
+        'InstanceType': instance_type,
+        'MinCount': min_count,
+        'MaxCount': max_count,
+        'BlockDeviceMappings': [
+            {
+                'DeviceName': '/dev/xvda',
+                'Ebs': {
+                    'VolumeSize': ebs_size,
+                    'VolumeType': 'gp3',
+                    'DeleteOnTermination': True
+                }
+            }
+        ],
         'UserData': USER_DATA,
         'IamInstanceProfile': {
             'Arn': 'arn:aws:iam::905418073202:instance-profile/ROLE-SSM'
