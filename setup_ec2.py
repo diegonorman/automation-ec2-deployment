@@ -54,20 +54,54 @@ def get_ami_id():
 
 AMI_ID = get_ami_id()
 
+# Create a security group named 'web-git' with ports 80 and 443 open to 0.0.0.0/0
+def create_security_group():
+    try:
+        response = ec2.create_security_group(
+            GroupName='web-git',
+            Description='Security group for web access on ports 80 and 443'
+        )
+        security_group_id = response['GroupId']
+
+        # Add inbound rules for ports 80 and 443
+        ec2.authorize_security_group_ingress(
+            GroupId=security_group_id,
+            IpPermissions=[
+                {
+                    'IpProtocol': 'tcp',
+                    'FromPort': 80,
+                    'ToPort': 80,
+                    'IpRanges': [{'CidrIp': '0.0.0.0/0'}]
+                },
+                {
+                    'IpProtocol': 'tcp',
+                    'FromPort': 443,
+                    'ToPort': 443,
+                    'IpRanges': [{'CidrIp': '0.0.0.0/0'}]
+                }
+            ]
+        )
+        return security_group_id
+    except Exception as e:
+        print(f"Erro ao criar ou configurar o grupo de segurança: {e}")
+        raise
+
+# Create the security group and get its ID
+security_group_id = create_security_group()
+
 try:
     # Criar a instância EC2
-    response = ec2.run_instances(
-        ImageId=AMI_ID,
-        InstanceType='t2.micro',
-        KeyName=None,
-        SecurityGroups=['my-security-group'],
-        MinCount=1,
-        MaxCount=1,
-        UserData=USER_DATA,
-        IamInstanceProfile={
+    instance_params = {
+        'ImageId': AMI_ID,
+        'InstanceType': 't2.micro',
+        'SecurityGroupIds': [security_group_id],
+        'MinCount': 1,
+        'MaxCount': 1,
+        'UserData': USER_DATA,
+        'IamInstanceProfile': {
             'Arn': 'arn:aws:iam::905418073202:role/ROLE-SSM'
         },
-        TagSpecifications=[
+        'TagSpecifications': [
             {
                 'ResourceType': 'instance',
                 'Tags': [
@@ -75,13 +109,16 @@ try:
                 ]
             }
         ],
-        NetworkInterfaces=[
+        'NetworkInterfaces': [
             {
                 'AssociatePublicIpAddress': True,
                 'DeviceIndex': 0
             }
         ]
-    )
+    }
+
+    # Remove KeyName to ensure no key pair is used
+    response = ec2.run_instances(**instance_params)
 
     instance_id = response['Instances'][0]['InstanceId']
     print(f"Instância criada com sucesso. ID da instância: {instance_id}")
