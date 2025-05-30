@@ -64,7 +64,6 @@ try:
     instance_params = {
         'ImageId': AMI_ID,
         'InstanceType': 't2.micro',
-        'SecurityGroupIds': [security_group_id],
         'MinCount': 1,
         'MaxCount': 1,
         'UserData': USER_DATA,
@@ -79,20 +78,14 @@ try:
                 ]
             }
         ],
-        'NetworkInterfaces': [
-            {
-                'AssociatePublicIpAddress': True,
-                'DeviceIndex': 0
-            }
-        ]
+        'SecurityGroupIds': [security_group_id]
     }
 
-    # Remove KeyName to ensure no key pair is used
     response = ec2.run_instances(**instance_params)
-
     instance_id = response['Instances'][0]['InstanceId']
     print(f"Instância criada com sucesso. ID da instância: {instance_id}")
 except Exception as e:
     print(f"Erro ao criar a instância EC2: {e}")
+    exit(1)  # Interrompe o processo se ocorrer um erro
 
 # Todas as mensagens de erro e logs agora serão fornecidos em português para consistência.

@@ -31,7 +31,8 @@ ec2 = boto3.client(
 try:
     response = ec2.start_instances(InstanceIds=INSTANCE_IDS)
     print(f"Instâncias iniciadas: {INSTANCE_IDS}")
+    print("Instância iniciada com sucesso.")
     exit(0)  # Sucesso
 except Exception as e:
     print(f"Erro ao iniciar instâncias: {e}")
-    exit(1)  # Falha
+    exit(1)  # Interrompe o processo se ocorrer um erro

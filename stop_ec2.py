@@ -27,8 +27,9 @@ ec2 = boto3.client(
 )
 
 try:
-    response = ec2.stop_instances(InstanceIds=INSTANCE_IDS)
+    ec2.stop_instances(InstanceIds=INSTANCE_IDS)
     print(f"Instâncias paradas: {INSTANCE_IDS}")
+    print("Instância parada com sucesso.")
     exit(0)  # Sucesso
 except Exception as e:
     print(f"Erro ao parar instâncias: {e}")
