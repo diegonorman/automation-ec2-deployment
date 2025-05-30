@@ -58,8 +58,4 @@ jobs:
           echo "Credenciais exportadas com sucesso."
 
       - name: Stopping EC2
-        env:
-          AWS_ACCESS_KEY_ID: ${{ steps.configure-aws-credentials.outputs.aws-access-key-id }}
-          AWS_SECRET_ACCESS_KEY: ${{ steps.configure-aws-credentials.outputs.aws-secret-access-key }}
-          AWS_SESSION_TOKEN: ${{ steps.configure-aws-credentials.outputs.aws-session-token }}
         run: python stop_ec2.py
