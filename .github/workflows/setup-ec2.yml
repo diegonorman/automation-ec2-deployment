@@ -39,4 +39,5 @@ jobs:
 
       - name: Setup EC2 Instance
         run: |
+          set -e  # Garante que o script pare em caso de erro
           python setup_ec2.py

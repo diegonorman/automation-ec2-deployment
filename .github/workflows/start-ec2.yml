@@ -49,4 +49,5 @@ jobs:
 
       - name: Starting EC2
         run: |
+          set -e  # Garante que o script pare em caso de erro
           python start_ec2.py

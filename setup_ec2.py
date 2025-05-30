@@ -2,8 +2,11 @@ import boto3
 import os
 import argparse
 
-# Configurações da instância EC2
+# Configurações gerais
 REGION = 'us-east-1'
+vpc_id = 'vpc-0c9b255128195b2b3'
+security_group_id = 'sg-0e0a217a7398631a5'
+ebs_size = 8  # Tamanho do EBS em GB
 
 # Script de inicialização (user-data)
 USER_DATA = '''#!/bin/bash
@@ -56,9 +59,6 @@ def get_ami_id():
 
 AMI_ID = get_ami_id()
 
-# Use the provided security group ID
-security_group_id = 'sg-0e0a217a7398631a5'
-
 try:
     # Criar a instância EC2
     instance_params = {
@@ -78,7 +78,14 @@ try:
                 ]
             }
         ],
-        'SecurityGroupIds': [security_group_id]
+        'NetworkInterfaces': [
+            {
+                'AssociatePublicIpAddress': True,
+                'DeviceIndex': 0,
+                'SubnetId': ec2.describe_subnets(Filters=[{'Name': 'vpc-id', 'Values': [vpc_id]}])['Subnets'][0]['SubnetId'],
+                'Groups': [security_group_id]
+            }
+        ]
     }
 
     response = ec2.run_instances(**instance_params)
@@ -88,4 +95,3 @@ except Exception as e:
     print(f"Erro ao criar a instância EC2: {e}")
     exit(1)  # Interrompe o processo se ocorrer um erro
 
-# Todas as mensagens de erro e logs agora serão fornecidos em português para consistência.
