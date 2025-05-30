@@ -33,18 +33,16 @@ ec2 = boto3.client(
     aws_session_token=aws_session_token
 )
 
-# Buscar instâncias com as tags especificadas
 instances = ec2.describe_instances(Filters=TAG_FILTERS)
-# Filtrar instâncias no estado 'stopped'
 instance_ids = [
     instance['InstanceId']
     for reservation in instances['Reservations']
     for instance in reservation['Instances']
-    if instance['State']['Name'] == 'stopped'
+    if instance['State']['Name'] in ['stopped', 'stopping']
 ]
 
 if not instance_ids:
-    print("Nenhuma instância no estado 'stopped' encontrada com as tags especificadas.")
+    print("Nenhuma instância nos estados 'stopped' ou 'stopping' encontrada com as tags especificadas.")
     exit(0)
 
 try:
