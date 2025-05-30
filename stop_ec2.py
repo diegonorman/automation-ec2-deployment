@@ -1,8 +1,13 @@
 import boto3
 import os
 
-INSTANCE_IDS = ['i-06a4184ec28822e99']
+# Configurações gerais
 REGION = 'us-east-1'
+TAG_FILTERS = [
+    {'Name': 'tag:Environment', 'Values': ['production']},
+    {'Name': 'tag:Owner', 'Values': ['Norman']},
+    {'Name': 'tag:Team', 'Values': ['DevOps']}
+]
 
 # Configurar cliente boto3 com credenciais temporárias diretamente do ambiente
 aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
@@ -26,9 +31,21 @@ ec2 = boto3.client(
     aws_session_token=aws_session_token
 )
 
+# Buscar instâncias com as tags especificadas
+instances = ec2.describe_instances(Filters=TAG_FILTERS)
+instance_ids = [
+    instance['InstanceId']
+    for reservation in instances['Reservations']
+    for instance in reservation['Instances']
+]
+
+if not instance_ids:
+    print("Nenhuma instância encontrada com as tags especificadas.")
+    exit(0)
+
 try:
-    ec2.stop_instances(InstanceIds=INSTANCE_IDS)
-    print(f"Instâncias paradas: {INSTANCE_IDS}")
+    ec2.stop_instances(InstanceIds=instance_ids)
+    print(f"Instâncias paradas: {instance_ids}")
     print("Instância parada com sucesso.")
     exit(0)  # Sucesso
 except Exception as e:

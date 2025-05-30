@@ -10,7 +10,12 @@ ebs_size = 8
 instance_type = 't4g.micro'
 min_count = 1
 max_count = 1
-instance_name = 'Git-deplyoment-CI/CD'  # Nome personalizado da instância
+instance_name = 'Git-deplyoment-CI/CD'
+instance_tags = [
+    {'Key': 'Environment', 'Value': 'production'},
+    {'Key': 'Owner', 'Value': 'Norman'},
+    {'Key': 'Team', 'Value': 'DevOps'}
+]
 
 # Script de inicialização (user-data)
 USER_DATA = '''#!/bin/bash
@@ -88,7 +93,8 @@ try:
             {
                 'ResourceType': 'instance',
                 'Tags': [
-                    {'Key': 'Name', 'Value': instance_name}  # Usar a variável personalizada
+                    {'Key': 'Name', 'Value': instance_name},
+                    *instance_tags
                 ]
             }
         ],
@@ -103,8 +109,6 @@ try:
     }
 
     response = ec2.run_instances(**instance_params)
-    instance_id = response['Instances'][0]['InstanceId']
-    print(f"Instância criada com sucesso. ID da instância: {instance_id}")
 except Exception as e:
     print(f"Erro ao criar a instância EC2: {e}")
     exit(1)  # Interrompe o processo se ocorrer um erro

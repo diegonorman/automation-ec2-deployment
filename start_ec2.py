@@ -2,8 +2,13 @@ import argparse
 import boto3
 import os
 
-INSTANCE_IDS = ['i-06a4184ec28822e99']
+# Configurações gerais
 REGION = 'us-east-1'
+TAG_FILTERS = [
+    {'Name': 'tag:Environment', 'Values': ['production']},
+    {'Name': 'tag:Owner', 'Values': ['Norman']},
+    {'Name': 'tag:Team', 'Values': ['DevOps']}
+]
 
 # Configurar argumentos de linha de comando
 parser = argparse.ArgumentParser(description='Iniciar instâncias EC2.')
@@ -28,9 +33,21 @@ ec2 = boto3.client(
     aws_session_token=aws_session_token
 )
 
+# Buscar instâncias com as tags especificadas
+instances = ec2.describe_instances(Filters=TAG_FILTERS)
+instance_ids = [
+    instance['InstanceId']
+    for reservation in instances['Reservations']
+    for instance in reservation['Instances']
+]
+
+if not instance_ids:
+    print("Nenhuma instância encontrada com as tags especificadas.")
+    exit(0)
+
 try:
-    response = ec2.start_instances(InstanceIds=INSTANCE_IDS)
-    print(f"Instâncias iniciadas: {INSTANCE_IDS}")
+    response = ec2.start_instances(InstanceIds=instance_ids)
+    print(f"Instâncias iniciadas: {instance_ids}")
     print("Instância iniciada com sucesso.")
     exit(0)  # Sucesso
 except Exception as e:
