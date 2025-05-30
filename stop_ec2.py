@@ -1,7 +1,7 @@
 import argparse
 import boto3
 
-INSTANCE_IDS = ['i-1234567890abcdef0']
+INSTANCE_IDS = ['i-06a4184ec28822e99']
 REGION = 'us-east-1'
 
 # Configurar argumentos de linha de comando
