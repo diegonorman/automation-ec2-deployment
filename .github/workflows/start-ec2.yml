@@ -50,9 +50,3 @@ jobs:
       - name: Starting EC2
         run: |
           python start_ec2.py
-          status=$?
-          if [ $status -eq 0 ]; then
-            curl -X POST -H "Content-Type: application/json" -d '{"status":"success"}' <n8n-webhook-url>
-          else
-            curl -X POST -H "Content-Type: application/json" -d '{"status":"failure"}' <n8n-webhook-url>
-          fi
