@@ -8,9 +8,11 @@ REGION = 'us-east-1'
 # Script de inicialização (user-data)
 USER_DATA = '''#!/bin/bash
 sudo apt update -y
-sudo apt install -y apache2
+sudo apt install -y apache2 docker.io
 sudo systemctl start apache2
 sudo systemctl enable apache2
+sudo systemctl start docker
+sudo systemctl enable docker
 echo "<h1>Instância configurada com sucesso!</h1>" > /var/www/html/index.html
 '''
 
@@ -67,7 +69,7 @@ try:
         'MaxCount': 1,
         'UserData': USER_DATA,
         'IamInstanceProfile': {
-            'Arn': 'arn:aws:iam::905418073202:role/ROLE-SSM'
+            'Arn': 'arn:aws:iam::905418073202:instance-profile/ROLE-SSM'
         },
         'TagSpecifications': [
             {
@@ -92,3 +94,5 @@ try:
     print(f"Instância criada com sucesso. ID da instância: {instance_id}")
 except Exception as e:
     print(f"Erro ao criar a instância EC2: {e}")
+
+# Todas as mensagens de erro e logs agora serão fornecidos em português para consistência.
