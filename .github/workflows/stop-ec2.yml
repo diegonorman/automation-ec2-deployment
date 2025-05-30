@@ -3,6 +3,10 @@ name: Stop EC2 Instances
 on:
   workflow_dispatch:
 
+permissions:
+      id-token: write
+      contents: read
+
 jobs:
   stop-ec2:
     runs-on: ubuntu-latest
